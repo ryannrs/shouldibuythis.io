@@ -47,8 +47,8 @@ function buildConfirmationEmail(toEmail: string) {
       You're on the list.
     </h1>
     <p style="color:#a1a1aa;line-height:1.7;margin:0 0 24px;font-size:15px;">
-      Thanks for signing up. You'll hear from me when early access opens.
-      Waitlist members get input on which features get built first.
+      Thanks for signing up. I'll keep you in the loop on what's being built,
+      what's shipping next, and when you can try it.
     </p>
     <div style="border-top:1px solid #27272a;padding-top:20px;margin-top:8px;">
       <p style="color:#52525b;font-size:13px;margin:0;line-height:1.6;">
@@ -67,8 +67,8 @@ function buildConfirmationEmail(toEmail: string) {
           Data: [
             "ShouldIBuyThis.io: You're on the list.",
             "",
-            "Thanks for signing up. You'll hear from me when early access opens.",
-            "Waitlist members get input on which features get built first.",
+            "Thanks for signing up. I'll keep you in the loop on what's being built,",
+            "what's shipping next, and when you can try it.",
             "",
             "Questions? Email me at hello@shouldibuythis.io",
             "",
