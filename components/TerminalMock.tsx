@@ -6,12 +6,12 @@ const QUERY = 'analyze "Sony WH-1000XM5 Headphones"';
 
 const LINES = [
   {
-    agent: "ADVOCATE ",
+    agent: "ADVOCATE",
     color: "text-emerald-400",
     text: "Best-in-class ANC, 30hr battery, #1 rated by Wirecutter & RTINGS for 3 consecutive years.",
   },
   {
-    agent: "SKEPTIC  ",
+    agent: "SKEPTIC",
     color: "text-rose-400",
     text: "847 Reddit threads: plastic hinge cracks around 14 months. Mic quality heavily criticized on calls.",
   },
@@ -107,7 +107,7 @@ export default function TerminalMock() {
           {LINES.map((line, i) =>
             visibleLines > i ? (
               <div key={i} className="flex items-start gap-3">
-                <span className={`${line.color} flex-shrink-0 mt-0.5 whitespace-pre`}>
+                <span className={`${line.color} flex-shrink-0 mt-0.5 inline-block min-w-[11ch]`}>
                   [{line.agent}]
                 </span>
                 <span className="text-zinc-400 leading-relaxed">
