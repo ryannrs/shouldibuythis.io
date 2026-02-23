@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ShouldIBuyThis.io: AI-Assisted Purchase Research</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    .gradient-text {
+      background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .accent-gradient {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #7c3aed 100%);
+    }
+    .hero-glow {
+      background: radial-gradient(ellipse at 50% 0%, rgba(99,102,241,0.12) 0%, transparent 70%);
+    }
+    .verdict-glow {
+      box-shadow: 0 0 60px rgba(99, 102, 241, 0.12), 0 0 0 1px rgba(99,102,241,0.1);
+    }
+    .agent-card {
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .agent-card:hover {
+      transform: translateY(-4px);
+    }
+    .agent-card-advocate:hover { box-shadow: 0 8px 40px rgba(52,211,153,0.08); }
+    .agent-card-skeptic:hover  { box-shadow: 0 8px 40px rgba(251,113,133,0.08); }
+    .agent-card-economist:hover { box-shadow: 0 8px 40px rgba(129,140,248,0.08); }
+
+    .blink { animation: blink 1.1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    input[type="email"]:focus { outline: none; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-white font-sans antialiased">
+
+  <!-- ═══════════════════════════ NAV ═══════════════════════════ -->
+  <nav class="border-b border-zinc-800/60 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-7 h-7 rounded-lg accent-gradient flex items-center justify-center flex-shrink-0">
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/>
+          </svg>
+        </div>
+        <span class="font-bold text-white text-lg tracking-tight">ShouldIBuyThis<span class="text-indigo-400">.io</span></span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="#how-it-works" class="hidden sm:block text-sm text-zinc-400 hover:text-white transition-colors">How it works</a>
+        <button onclick="document.getElementById('cta-email').focus()" class="text-sm accent-gradient hover:opacity-90 text-white px-4 py-2 rounded-lg font-semibold transition-opacity">
+          Join Waitlist
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0 hero-glow pointer-events-none"></div>
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-indigo-600/8 rounded-full blur-[140px]"></div>
+    </div>
+
+    <div class="max-w-4xl mx-auto px-6 pt-24 pb-20 text-center relative z-10">
+
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-700/80 rounded-full px-4 py-1.5 text-sm text-zinc-400 mb-10">
+        <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full" style="animation: pulse 2s cubic-bezier(0.4,0,0.6,1) infinite;"></span>
+        Private beta, now accepting signups
+      </div>
+
+      <!-- Headline -->
+      <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.05] mb-7">
+        <span class="gradient-text">Forty-seven tabs.</span><br/>
+        <span class="text-white">Still not sure?</span>
+      </h1>
+
+      <!-- Subheadline -->
+      <p class="text-xl text-zinc-400 max-w-2xl mx-auto mb-3 leading-relaxed">
+        ShouldIBuyThis.io runs three AI agents against any product you're considering. One builds the case for buying, one looks for red flags, and one checks whether you're getting a fair price.
+      </p>
+      <p class="text-base text-zinc-500 mb-10">
+        You get a <strong class="text-white font-semibold">Buy</strong>, <strong class="text-white font-semibold">Skip</strong>, or <strong class="text-white font-semibold">Buy Better</strong> recommendation with the full reasoning and sources behind it.
+      </p>
+
+      <!-- Email capture -->
+      <form class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" onsubmit="return false;">
+        <input
+          id="cta-email"
+          type="email"
+          placeholder="your@email.com"
+          class="flex-1 bg-zinc-900 border border-zinc-700 hover:border-zinc-600 focus:border-indigo-500 text-white placeholder-zinc-600 rounded-xl px-4 py-3.5 text-sm transition-colors"
+        />
+        <button
+          type="submit"
+          class="accent-gradient hover:opacity-90 text-white font-semibold px-6 py-3.5 rounded-xl transition-opacity whitespace-nowrap text-sm"
+        >
+          Join the Waitlist →
+        </button>
+      </form>
+      <p class="text-xs text-zinc-700 mt-3">No spam. No nonsense. Unsubscribe anytime.</p>
+
+      <!-- Mock terminal -->
+      <div class="mt-16 bg-zinc-900/80 border border-zinc-800 rounded-2xl p-6 text-left max-w-2xl mx-auto verdict-glow">
+        <div class="flex items-center gap-1.5 mb-5">
+          <div class="w-3 h-3 rounded-full bg-zinc-700"></div>
+          <div class="w-3 h-3 rounded-full bg-zinc-700"></div>
+          <div class="w-3 h-3 rounded-full bg-zinc-700"></div>
+          <span class="text-zinc-600 text-xs ml-2 font-mono">shouldibuythis.io</span>
+        </div>
+        <p class="text-zinc-500 text-xs font-mono mb-4">
+          $ analyze <span class="text-zinc-200">"Sony WH-1000XM5 Headphones"</span><span class="blink text-indigo-400">▌</span>
+        </p>
+        <div class="space-y-3 text-sm font-mono">
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-400 text-xs mt-0.5 flex-shrink-0">[ADVOCATE]</span>
+            <span class="text-zinc-400 text-xs leading-relaxed">Best-in-class ANC, 30hr battery, best-seller for 3 years. Consistently rated #1 by Wirecutter, RTINGS.</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-rose-400 text-xs mt-0.5 flex-shrink-0">[SKEPTIC ]</span>
+            <span class="text-zinc-400 text-xs leading-relaxed">Plastic hinge cracking reported in 847 Reddit threads around 14 months in. Call quality criticized consistently.</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-indigo-400 text-xs mt-0.5 flex-shrink-0">[ECONOMIST]</span>
+            <span class="text-zinc-400 text-xs leading-relaxed">Currently $50 above 90-day low. Anker Q45 delivers 85% of performance at 38% of the cost ($59.99).</span>
+          </div>
+          <div class="border-t border-zinc-800 pt-4 mt-2">
+            <div class="flex items-center gap-3">
+              <span class="text-zinc-600 text-xs font-mono">VERDICT</span>
+              <span class="text-amber-400 font-bold text-sm tracking-wide">BUY THE ALTERNATIVE</span>
+              <span class="text-zinc-500 text-xs">Anker Q45 · $59.99 · 94% confidence</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════ TRUST BAR ════════════════════ -->
+  <div class="border-y border-zinc-800/60 bg-zinc-900/20 py-5">
+    <div class="max-w-4xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12 text-zinc-600 text-sm">
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-zinc-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.955 11.955 0 003 10c0 5.591 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+        No affiliate links, ever
+      </div>
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-zinc-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+        Three perspectives, one clear recommendation
+      </div>
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-zinc-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197"/></svg>
+        1,200+ already on the waitlist
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════ HOW IT WORKS — THREE AGENTS ══════════════════ -->
+  <section id="how-it-works" class="max-w-6xl mx-auto px-6 py-28">
+    <div class="text-center mb-16">
+      <p class="text-indigo-400 text-sm font-semibold uppercase tracking-widest mb-3">Under the Hood</p>
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-5 leading-tight">
+        Three agents. One structured analysis.
+      </h2>
+      <p class="text-zinc-400 text-lg max-w-xl mx-auto leading-relaxed">
+        Each product goes through a three-stage analysis pulling from reviews, forums, and price data. You get a clear recommendation with the sources to back it up.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+      <!-- The Advocate -->
+      <div class="agent-card agent-card-advocate bg-zinc-900 border border-zinc-800 hover:border-emerald-500/40 rounded-2xl p-7">
+        <div class="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6">
+          <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75A2.25 2.25 0 0116.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48a4.53 4.53 0 01-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.904"/>
+          </svg>
+        </div>
+        <div class="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-2">Agent 01: The Advocate</div>
+        <h3 class="text-xl font-bold text-white mb-3 leading-snug">Builds the case for buying.</h3>
+        <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+          Pulls verified purchase reviews, editorial roundups, and spec sheets. Surfaces the product's performance data and most praised real-world use cases so you know what you'd be getting at its best.
+        </p>
+        <ul class="space-y-2 text-sm text-zinc-500">
+          <li class="flex items-center gap-2.5"><span class="w-4 h-4 rounded bg-emerald-500/10 flex items-center justify-center text-emerald-500 text-xs flex-shrink-0">→</span> Top-rated review synthesis</li>
+          <li class="flex items-center gap-2.5"><span class="w-4 h-4 rounded bg-emerald-500/10 flex items-center justify-center text-emerald-500 text-xs flex-shrink-0">→</span> Spec benchmarking vs. category leaders</li>
+          <li class="flex items-center gap-2.5"><span class="w-4 h-4 rounded bg-emerald-500/10 flex items-center justify-center text-emerald-500 text-xs flex-shrink-0">→</span> Use-case fit scoring</li>
+        </ul>
+      </div>
+
+      <!-- The Skeptic -->
+      <div class="agent-card agent-card-skeptic bg-zinc-900 border border-zinc-800 hover:border-rose-500/40 rounded-2xl p-7">
+        <div class="w-11 h-11 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mb-6">
+          <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 15h2.25m8.024-9.75c.011.05.028.1.052.148.591 1.2.924 2.55.924 3.977a8.96 8.96 0 01-.999 4.125m.023-8.25c-.076-.365.183-.75.575-.75h.908c.889 0 1.713.518 1.972 1.368.339 1.11.521 2.287.521 3.507 0 1.553-.295 3.036-.831 4.398C20.613 14.547 19.833 15 19 15h-1.053A72.77 72.77 0 0118 19.5M4.62 6.75L3.75 16.5c0 1.036.84 1.875 1.875 1.875H9M4.62 6.75h8.758M4.62 6.75C4.62 5.784 3.835 5 2.87 5h-.12M9 18.375a1.125 1.125 0 000 2.25M9 18.375v2.25"/>
+          </svg>
+        </div>
+        <div class="text-xs font-bold text-rose-400 uppercase tracking-widest mb-2">Agent 02: The Skeptic</div>
+        <h3 class="text-xl font-bold text-white mb-3 leading-snug">Looks for red flags and failure modes.</h3>
+        <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+          Mines Reddit threads, one-star reviews, and owner forums for failure modes that marketing buries. Focuses on what breaks over time, what owners regret, and what the spec sheet leaves out.
+        </p>
+        <ul class="space-y-2 text-sm text-zinc-500">
+          <li class="flex items-center gap-2.5"><span class="w-4 h-4 rounded bg-rose-500/10 flex items-center justify-center text-rose-500 text-xs flex-shrink-0">→</span> Reddit & forum fail-point mining</li>
+          <li class="flex items-center gap-2.5"><span class="w-4 h-4 rounded bg-rose-500/10 flex items-center justify-center text-rose-500 text-xs flex-shrink-0">→</span> Long-term durability signals</li>
+          <li class="flex items-center gap-2.5"><span class="w-4 h-4 rounded bg-rose-500/10 flex items-center justify-center text-rose-500 text-xs flex-shrink-0">→</span> Common post-purchase regret patterns</li>
+        </ul>
+      </div>
+
+      <!-- The Economist -->
+      <div class="agent-card agent-card-economist bg-zinc-900 border border-zinc-800 hover:border-indigo-500/40 rounded-2xl p-7">
+        <div class="w-11 h-11 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-6">
+          <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/>
+          </svg>
+        </div>
+        <div class="text-xs font-bold text-indigo-400 uppercase tracking-widest mb-2">Agent 03: The Economist</div>
+        <h3 class="text-xl font-bold text-white mb-3 leading-snug">Checks the price and finds alternatives.</h3>
+        <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+          Analyzes 90 days of price history to tell you whether now is a good time to buy. Then searches the market for alternatives that offer better value per dollar, with a specific product recommendation.
+        </p>
+        <ul class="space-y-2 text-sm text-zinc-500">
+          <li class="flex items-center gap-2.5"><span class="w-4 h-4 rounded bg-indigo-500/10 flex items-center justify-center text-indigo-500 text-xs flex-shrink-0">→</span> 90-day price history & trend analysis</li>
+          <li class="flex items-center gap-2.5"><span class="w-4 h-4 rounded bg-indigo-500/10 flex items-center justify-center text-indigo-500 text-xs flex-shrink-0">→</span> Value-per-dollar alternative ranking</li>
+          <li class="flex items-center gap-2.5"><span class="w-4 h-4 rounded bg-indigo-500/10 flex items-center justify-center text-indigo-500 text-xs flex-shrink-0">→</span> Buy now vs. wait recommendation</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════ THE VERDICT SECTION ══════════════════════ -->
+  <section class="relative border-y border-zinc-800/60 bg-zinc-900/30 py-28 overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-indigo-700/8 rounded-full blur-[100px]"></div>
+    </div>
+    <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+      <div class="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full px-4 py-1.5 text-sm text-indigo-400 mb-8">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+        The Verdict Engine
+      </div>
+
+      <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
+        The result: one clear recommendation.
+      </h2>
+      <p class="text-zinc-400 text-lg max-w-2xl mx-auto mb-16 leading-relaxed">
+        After the analysis, a summary layer weighs each agent's findings, scores confidence, and returns one of three verdicts. Every report includes the full reasoning, source links, and a confidence score.
+      </p>
+
+      <!-- Verdict Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto mb-10">
+        <div class="bg-emerald-500/5 border border-emerald-500/25 hover:border-emerald-500/50 rounded-2xl p-6 text-left transition-colors">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
+            <span class="text-xs text-emerald-500 font-semibold uppercase tracking-widest">Verdict A</span>
+          </div>
+          <div class="text-3xl font-black text-emerald-400 mb-3 tracking-tight">BUY IT</div>
+          <p class="text-zinc-400 text-sm leading-relaxed">The product holds up under scrutiny. Specs, reviews, and price all check out for the use case.</p>
+        </div>
+        <div class="bg-rose-500/5 border border-rose-500/25 hover:border-rose-500/50 rounded-2xl p-6 text-left transition-colors">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-2.5 h-2.5 rounded-full bg-rose-400"></div>
+            <span class="text-xs text-rose-500 font-semibold uppercase tracking-widest">Verdict B</span>
+          </div>
+          <div class="text-3xl font-black text-rose-400 mb-3 tracking-tight">SKIP IT</div>
+          <p class="text-zinc-400 text-sm leading-relaxed">The Skeptic found enough failure modes to recommend passing. The report explains what went wrong.</p>
+        </div>
+        <div class="bg-amber-500/5 border border-amber-500/25 hover:border-amber-500/50 rounded-2xl p-6 text-left transition-colors">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-2.5 h-2.5 rounded-full bg-amber-400"></div>
+            <span class="text-xs text-amber-500 font-semibold uppercase tracking-widest">Verdict C</span>
+          </div>
+          <div class="text-3xl font-black text-amber-400 mb-3 tracking-tight">BUY BETTER</div>
+          <p class="text-zinc-400 text-sm leading-relaxed">The Economist found a competing product with better value. You get the specific alternative to consider.</p>
+        </div>
+      </div>
+
+      <p class="text-zinc-600 text-sm">
+        Every verdict includes a full debate transcript, confidence score, and source links.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ WHY NOT JUST GOOGLE IT ═══════════════════ -->
+  <section class="max-w-4xl mx-auto px-6 py-24">
+    <div class="text-center mb-14">
+      <h2 class="text-3xl sm:text-4xl font-black text-white mb-4">How this compares to existing research tools</h2>
+      <p class="text-zinc-400 text-base max-w-xl mx-auto">It pulls from the same sources you'd check anyway. The difference is that it synthesizes those into a single structured recommendation, with the reasoning shown.</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="bg-zinc-900/60 border border-zinc-800 rounded-xl p-5 flex gap-4">
+        <div class="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </div>
+        <div>
+          <div class="font-semibold text-white text-sm mb-1">Review sites rely on affiliate revenue</div>
+          <div class="text-zinc-500 text-sm leading-relaxed">Affiliate commissions mean "best of" lists often rank products by payout, not by how well they actually perform.</div>
+        </div>
+      </div>
+      <div class="bg-zinc-900/60 border border-zinc-800 rounded-xl p-5 flex gap-4">
+        <div class="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </div>
+        <div>
+          <div class="font-semibold text-white text-sm mb-1">Reddit takes time to parse</div>
+          <div class="text-zinc-500 text-sm leading-relaxed">Useful signal exists in threads and owner forums, but it's buried under noise and posts about discontinued hardware.</div>
+        </div>
+      </div>
+      <div class="bg-zinc-900/60 border border-zinc-800 rounded-xl p-5 flex gap-4">
+        <div class="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </div>
+        <div>
+          <div class="font-semibold text-white text-sm mb-1">YouTube is entertainment, not analysis</div>
+          <div class="text-zinc-500 text-sm leading-relaxed">Production value is high, but sponsored integrations are common and engagement tends to be optimized over accuracy.</div>
+        </div>
+      </div>
+      <div class="bg-zinc-900/60 border border-zinc-800 rounded-xl p-5 flex gap-4">
+        <div class="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center flex-shrink-0 mt-0.5">
+          <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </div>
+        <div>
+          <div class="font-semibold text-white text-sm mb-1">General AI lacks live product data</div>
+          <div class="text-zinc-500 text-sm leading-relaxed">Most AI assistants don't scrape current reviews, track price history, or run a structured analysis against a specific product.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ FINAL CTA ══════════════════════════ -->
+  <section class="border-t border-zinc-800/60 bg-zinc-900/30 py-24">
+    <div class="max-w-2xl mx-auto px-6 text-center">
+      <h2 class="text-4xl sm:text-5xl font-black text-white mb-4 leading-tight">
+        Get a structured second opinion before you buy.
+      </h2>
+      <p class="text-zinc-400 text-lg mb-10 leading-relaxed">
+        ShouldIBuyThis.io is in private beta. Sign up for early access. Waitlist members get input on which features get built first.
+      </p>
+      <form class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" onsubmit="return false;">
+        <input
+          type="email"
+          placeholder="your@email.com"
+          class="flex-1 bg-zinc-900 border border-zinc-700 hover:border-zinc-600 focus:border-indigo-500 text-white placeholder-zinc-600 rounded-xl px-4 py-3.5 text-sm transition-colors"
+        />
+        <button
+          type="submit"
+          class="accent-gradient hover:opacity-90 text-white font-semibold px-6 py-3.5 rounded-xl transition-opacity whitespace-nowrap text-sm"
+        >
+          Get Early Access →
+        </button>
+      </form>
+      <p class="text-xs text-zinc-700 mt-3">1,200+ people already on the list. No spam, ever.</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+  <footer class="border-t border-zinc-800/60 py-8 bg-zinc-950">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2.5">
+        <div class="w-6 h-6 rounded-lg accent-gradient flex items-center justify-center flex-shrink-0">
+          <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/>
+          </svg>
+        </div>
+        <span class="text-zinc-500 text-sm">ShouldIBuyThis.io: AI-assisted purchase research</span>
+      </div>
+      <div class="flex items-center gap-6 text-sm text-zinc-600">
+        <a href="mailto:hello@shouldibuythis.io" class="hover:text-zinc-400 transition-colors">hello@shouldibuythis.io</a>
+        <span>© 2026 ShouldIBuyThis.io</span>
+      </div>
+    </div>
+    <div class="max-w-6xl mx-auto px-6 pt-4 border-t border-zinc-900 mt-4">
+      <p class="text-zinc-700 text-xs text-center leading-relaxed">
+        This is an early-stage project. Features, pricing, and availability are not final and subject to change. Emails collected are used only to notify you when early access opens.
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>
