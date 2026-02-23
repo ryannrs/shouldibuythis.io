@@ -107,7 +107,7 @@ export default function TerminalMock() {
           {LINES.map((line, i) =>
             visibleLines > i ? (
               <div key={i} className="flex items-start gap-3">
-                <span className={`${line.color} flex-shrink-0 mt-0.5`}>
+                <span className={`${line.color} flex-shrink-0 mt-0.5 whitespace-pre`}>
                   [{line.agent}]
                 </span>
                 <span className="text-zinc-400 leading-relaxed">

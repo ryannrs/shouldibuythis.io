@@ -23,7 +23,7 @@ const jsonLd = {
     price: "0",
     priceCurrency: "USD",
     availability: "https://schema.org/PreOrder",
-    description: "Currently in private beta. Free early access for waitlist members.",
+    description: "Waitlist now open. Sign up to stay in the loop on development.",
   },
 };
 

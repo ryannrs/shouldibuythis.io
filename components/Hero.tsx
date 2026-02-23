@@ -18,7 +18,7 @@ export default function Hero() {
         {/* Beta badge */}
         <div className="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-700/80 rounded-full px-4 py-1.5 text-sm text-zinc-400 mb-10">
           <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
-          Private beta, now accepting signups
+          Stay in the loop · Join the waitlist
         </div>
 
         {/* Headline */}

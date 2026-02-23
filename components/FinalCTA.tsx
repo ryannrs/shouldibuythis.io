@@ -11,9 +11,8 @@ export default async function FinalCTA() {
           Get a verdict before you spend a dollar.
         </h2>
         <p className="text-zinc-400 text-lg mb-10 leading-relaxed">
-          ShouldIBuyThis.io is in private beta. Sign up to stay in the loop
-          on development — what&apos;s being built, what&apos;s shipping next,
-          and when you can try it.
+          Sign up to stay in the loop on development — what&apos;s being
+          built, what&apos;s shipping next, and when you can try it.
         </p>
 
         <WaitlistForm buttonText="Stay in the Loop →" />
