@@ -171,7 +171,7 @@ export default function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                 Join the waitlist
               </h3>
               <p className="text-zinc-400 text-sm leading-relaxed">
-                Get early access and help shape what gets built.
+                Stay in the loop and help shape what gets built.
               </p>
             </div>
 
@@ -219,7 +219,7 @@ export default function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                     Joining...
                   </span>
                 ) : (
-                  "Get Early Access →"
+                  "Stay in the Loop →"
                 )}
               </button>
             </form>

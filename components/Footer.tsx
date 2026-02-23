@@ -49,7 +49,7 @@ export default function Footer() {
       {/* Disclaimer */}
       <div className="max-w-6xl mx-auto px-6 pt-4 border-t border-zinc-900 mt-4">
         <p className="text-zinc-700 text-xs text-center leading-relaxed">
-          This is an early-stage project. Features, pricing, and availability are not final and subject to change. Emails collected are used only to notify you when early access opens.
+          This is an early-stage project. Features, pricing, and availability are not final and subject to change. Emails collected are used only to send development updates.
         </p>
       </div>
     </footer>

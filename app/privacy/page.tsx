@@ -12,7 +12,7 @@ export default function PrivacyPage() {
 
         <p className="text-zinc-400 text-sm leading-relaxed mb-6">
           Your email address is collected solely to notify you when
-          ShouldIBuyThis.io opens early access. I don&apos;t sell it, share it
+          ShouldIBuyThis.io launches. I don&apos;t sell it, share it
           with third parties, or use it for any other purpose. You can request
           deletion at any time by emailing{" "}
           <a
