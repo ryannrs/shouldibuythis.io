@@ -11,11 +11,11 @@ export default async function FinalCTA() {
           Get a verdict before you spend a dollar.
         </h2>
         <p className="text-zinc-400 text-lg mb-10 leading-relaxed">
-          Sign up to stay in the loop on development — what&apos;s being
-          built, what&apos;s shipping next, and when you can try it.
+          Access is invite-only for now. Join the waitlist and we&apos;ll
+          reach out when a spot opens up.
         </p>
 
-        <WaitlistForm buttonText="Stay in the Loop →" />
+        <WaitlistForm buttonText="Request Access →" />
 
         <p className="text-xs text-zinc-700 mt-3">
           {count > 0

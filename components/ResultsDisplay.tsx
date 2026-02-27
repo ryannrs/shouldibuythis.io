@@ -18,6 +18,7 @@ type VerdictData = {
   confidence: number;
   reasoning: string;
   alternative?: string | null;
+  bullets?: string[];
 };
 
 type AgentMeta = {
@@ -41,6 +42,7 @@ const VERDICT_COLORS: Record<string, string> = {
   WAIT: "text-amber-400",
   "CONSIDER ALTERNATIVES": "text-indigo-400",
   SKIP: "text-rose-400",
+  "YOU DON'T NEED IT": "text-violet-400",
 };
 
 // ─── Streaming hook ───────────────────────────────────────────────────────────
@@ -331,9 +333,28 @@ function VerdictCard({ verdict }: { verdict: VerdictData }) {
       <span className="text-zinc-600 text-xs font-mono tracking-widest uppercase">Verdict</span>
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
         <span className={`text-2xl font-black tracking-wide ${verdictColor}`}>{verdict.decision}</span>
-        <span className="text-zinc-500 text-sm">{displayConfidence}% confidence</span>
+        {/* Director confidence with tooltip */}
+        <div className="relative group inline-flex items-center gap-1 cursor-help">
+          <span className="text-zinc-500 text-sm">{displayConfidence}% Director confidence</span>
+          <svg className="w-3 h-3 text-zinc-700 group-hover:text-zinc-500 transition-colors" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+          </svg>
+          <div className="absolute bottom-full left-0 mb-2 w-64 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2.5 text-xs text-zinc-400 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-xl">
+            Reflects how strongly the Advocate, Skeptic, and Economist agree. Higher when all three point the same direction. Self-reported by the model — treat it as signal strength, not a probability.
+          </div>
+        </div>
       </div>
       <p className="text-zinc-400 text-sm leading-relaxed">{verdict.reasoning}</p>
+      {verdict.bullets && verdict.bullets.length > 0 && (
+        <ul className="space-y-1.5 mt-1">
+          {verdict.bullets.map((bullet, i) => (
+            <li key={i} className="flex items-start gap-2.5 text-sm text-zinc-500">
+              <span className={`mt-0.5 flex-shrink-0 text-xs ${verdictColor}`}>✓</span>
+              <span>{bullet}</span>
+            </li>
+          ))}
+        </ul>
+      )}
       {verdict.alternative && (
         <div className="border-t border-zinc-800 pt-3 mt-1 flex items-start justify-between gap-4">
           <div>

@@ -1,56 +1,74 @@
 const verdicts = [
   {
     id: "buy",
-    outcome: "BUY IT",
+    outcome: "BUY",
     stripeColor: "bg-emerald-500/50",
     cardStyle: "bg-emerald-500/5 border-zinc-800 hover:border-emerald-500/30",
     glowStyle: "hover:shadow-[0_8px_40px_rgba(52,211,153,0.07)]",
     outcomeColor: "text-emerald-400",
     checkColor: "text-emerald-500",
     confidence: "91%",
-    query: "Kindle Paperwhite 16GB",
+    query: "Premium E-Reader",
     insight:
       "Top-rated in its category for three years. Common complaints are minor and price is fair.",
     bullets: [
-      "4.7-star average across 28k verified reviews",
+      "Consistently top-rated across major review outlets",
       "No critical failure patterns in owner forums",
       "Currently at its historical average price",
     ],
   },
   {
+    id: "wait",
+    outcome: "WAIT",
+    stripeColor: "bg-amber-500/50",
+    cardStyle: "bg-amber-500/5 border-zinc-800 hover:border-amber-500/30",
+    glowStyle: "hover:shadow-[0_8px_40px_rgba(251,191,36,0.07)]",
+    outcomeColor: "text-amber-400",
+    checkColor: "text-amber-500",
+    confidence: "85%",
+    query: "Cordless Stick Vacuum (Premium)",
+    insight:
+      "Excellent performance, but the timing isn't right. Price is elevated — worth holding off for now.",
+    bullets: [
+      "Current price above recent market low",
+      "No next-gen successor currently announced",
+      "No urgent failure risk in your current setup",
+    ],
+  },
+  {
+    id: "alternatives",
+    outcome: "CONSIDER ALTERNATIVES",
+    stripeColor: "bg-indigo-500/50",
+    cardStyle: "bg-indigo-500/5 border-zinc-800 hover:border-indigo-500/30",
+    glowStyle: "hover:shadow-[0_8px_40px_rgba(129,140,248,0.07)]",
+    outcomeColor: "text-indigo-400",
+    checkColor: "text-indigo-500",
+    confidence: "88%",
+    query: "Premium Noise-Cancelling Headphones",
+    insight:
+      "Strong product, but a mid-range alternative delivers 85% of the experience at 38% of the cost.",
+    bullets: [
+      "Price above recent market low",
+      "Durability concerns flagged in owner forums",
+      "Mid-range alternative recommended at ~$60",
+    ],
+  },
+  {
     id: "skip",
-    outcome: "SKIP IT",
+    outcome: "SKIP",
     stripeColor: "bg-rose-500/50",
     cardStyle: "bg-rose-500/5 border-zinc-800 hover:border-rose-500/30",
     glowStyle: "hover:shadow-[0_8px_40px_rgba(251,113,133,0.07)]",
     outcomeColor: "text-rose-400",
     checkColor: "text-rose-500",
     confidence: "87%",
-    query: "Ninja DZ201 Dual Air Fryer",
+    query: "Dual-Zone Air Fryer",
     insight:
-      "Basket coating delaminates within 6 months. Better-built alternatives exist at lower prices.",
+      "Widespread coating failure reported within months of purchase. Better-built options exist for less.",
     bullets: [
-      "800+ owner reports of coating failure post-warranty",
+      "High volume of post-warranty failure reports",
       "Poor customer service documented across forums",
-      "Comparable performance available for less",
-    ],
-  },
-  {
-    id: "better",
-    outcome: "BUY BETTER",
-    stripeColor: "bg-amber-500/50",
-    cardStyle: "bg-amber-500/5 border-zinc-800 hover:border-amber-500/30",
-    glowStyle: "hover:shadow-[0_8px_40px_rgba(251,191,36,0.07)]",
-    outcomeColor: "text-amber-400",
-    checkColor: "text-amber-500",
-    confidence: "88%",
-    query: "Sony WH-1000XM5 Headphones",
-    insight:
-      "Strong product, but the Anker Q45 at $59 delivers 85% of the experience.",
-    bullets: [
-      "Currently $50 above its 90-day price low",
-      "Plastic hinge failures reported around 14 months",
-      "Anker Q45 recommended: 4.4 stars, $59.99",
+      "Comparable performance available at lower price",
     ],
   },
   {
@@ -62,12 +80,12 @@ const verdicts = [
     outcomeColor: "text-violet-400",
     checkColor: "text-violet-500",
     confidence: "93%",
-    query: "Instant Pot Duo 7-in-1",
+    query: "Multi-Function Pressure Cooker",
     insight:
-      "A Dutch oven, skillet, and pot already cover everything this claims to do.",
+      "You already own a Dutch oven, skillet, and pot. They cover everything this claims to do.",
     bullets: [
-      "All 7 use cases covered by existing cookware",
-      "90% of owners report using only 2 functions",
+      "All advertised use cases covered by existing cookware",
+      "Most owners report using only 1–2 of the functions",
       "Counter space cost outweighs any convenience gain",
     ],
   },
@@ -104,46 +122,41 @@ export default function VerdictSection() {
           </h2>
 
           <p className="text-zinc-400 text-lg max-w-2xl mx-auto leading-relaxed">
-            After the analysis, one of four verdicts comes back with full
-            reasoning and source links. Sometimes the right call is to skip the
-            purchase or realize you already have what you need.
+            After the analysis, one of five verdicts comes back with full
+            reasoning and source links. Sometimes the right call is to wait,
+            buy something else, or realize you already have what you need.
           </p>
         </div>
 
-        {/* Verdict cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Verdict cards — flex so the 5th card centers on the last row */}
+        <div className="flex flex-wrap justify-center gap-4">
           {verdicts.map((v) => (
             <div
               key={v.id}
-              className={`relative border rounded-2xl p-7 pt-9 transition-all duration-200 hover:-translate-y-1 ${v.cardStyle} ${v.glowStyle}`}
+              className={`relative border rounded-2xl overflow-hidden p-7 pt-9 transition-all duration-200 hover:-translate-y-1 w-full sm:w-[calc(50%-8px)] lg:w-[calc(33.333%-11px)] ${v.cardStyle} ${v.glowStyle}`}
             >
               {/* Colored accent stripe */}
               <div
-                className={`absolute inset-x-0 top-0 h-[2px] rounded-t-2xl ${v.stripeColor}`}
+                className={`absolute inset-x-0 top-0 h-[2px] ${v.stripeColor}`}
               />
 
               {/* Query label */}
               <div className="font-mono text-xs mb-5 flex items-center gap-2 min-w-0">
                 <span className="uppercase tracking-widest text-zinc-700 flex-shrink-0">
-                  analyzed
+                  example
                 </span>
                 <span className="text-zinc-800 flex-shrink-0">·</span>
                 <span className="text-zinc-500 truncate">{v.query}</span>
               </div>
 
-              {/* Outcome + Confidence */}
-              <div className="flex items-start justify-between gap-4 mb-4">
-                <div
-                  className={`text-2xl font-black tracking-tight leading-tight ${v.outcomeColor}`}
-                >
-                  {v.outcome}
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <div className={`text-lg font-black ${v.outcomeColor}`}>
-                    {v.confidence}
-                  </div>
-                  <div className="text-xs text-zinc-700">confidence</div>
-                </div>
+              {/* Outcome */}
+              <div className={`text-2xl font-black tracking-tight leading-tight mb-1 ${v.outcomeColor}`}>
+                {v.outcome}
+              </div>
+              {/* Confidence below verdict — avoids layout breaking on long verdict names */}
+              <div className="flex items-baseline gap-2 mb-4">
+                <span className={`text-sm font-black ${v.outcomeColor}`}>{v.confidence}</span>
+                <span className="text-xs text-zinc-700">director confidence</span>
               </div>
 
               {/* Insight */}

@@ -11,12 +11,13 @@ VERDICT_TOOL = [
             "properties": {
                 "decision": {
                     "type": "string",
-                    "enum": ["BUY", "WAIT", "CONSIDER ALTERNATIVES", "SKIP"],
+                    "enum": ["BUY", "WAIT", "CONSIDER ALTERNATIVES", "SKIP", "YOU DON'T NEED IT"],
                     "description": (
                         "BUY: strong case, fair price, no major red flags. "
                         "WAIT: good product but current price is meaningfully above the recent low. "
                         "CONSIDER ALTERNATIVES: a specific better-value product exists that avoids the Skeptic's primary concern. "
-                        "SKIP: fundamental problems (legal, structural, safety) that outweigh benefits regardless of price."
+                        "SKIP: fundamental problems (legal, structural, safety) that outweigh benefits regardless of price. "
+                        "YOU DON'T NEED IT: the user already owns a product that covers this use case, or the purchase is redundant given their existing setup — regardless of the product's quality or price."
                     )
                 },
                 "confidence": {
@@ -32,9 +33,16 @@ VERDICT_TOOL = [
                 "alternative": {
                     "type": "string",
                     "description": "CONSIDER ALTERNATIVES only: exact product name and price, e.g. 'Bose QuietComfort (2024) · $199 from Bose.com'. Omit for all other verdicts."
+                },
+                "bullets": {
+                    "type": "array",
+                    "description": "Exactly 3 short bullet points (max 12 words each) summarising the key findings that drove this verdict. Draw from specific facts named by the agents — prices, ratings, failure modes, alternatives.",
+                    "items": {"type": "string"},
+                    "minItems": 3,
+                    "maxItems": 3
                 }
             },
-            "required": ["decision", "confidence", "reasoning"]
+            "required": ["decision", "confidence", "reasoning", "bullets"]
         }
     }
 ]
@@ -77,6 +85,7 @@ Decision criteria:
 - WAIT: good product but current price is meaningfully above the Economist's documented recent low
 - CONSIDER ALTERNATIVES: a specific product named by the Economist exists at a lower price and avoids the Skeptic's primary concern
 - SKIP: the Skeptic identified fundamental problems (active litigation, structural failure, safety) that override the Advocate's case
+- YOU DON'T NEED IT: the user already owns something that covers this use case — use this when the owns context makes the purchase redundant, not when the product itself is bad
 
 Confidence reflects how clearly the three analyses converge. Be decisive — do not hedge.
 """
@@ -99,6 +108,7 @@ Confidence reflects how clearly the three analyses converge. Be decisive — do 
                 "confidence":  verdict["confidence"],
                 "reasoning":   verdict["reasoning"],
                 "alternative": verdict.get("alternative"),
+                "bullets":     verdict.get("bullets", []),
             }
 
     # Fallback — should not happen with tool_choice forced

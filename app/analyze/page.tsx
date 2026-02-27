@@ -20,7 +20,7 @@ export default function AnalyzePage() {
         />
         <div className="fixed top-20 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-indigo-600/[0.06] rounded-full blur-[140px] pointer-events-none" />
 
-        <div className="max-w-3xl w-full relative z-10">
+        <div className="max-w-5xl w-full relative z-10">
           <AnalyzeForm />
         </div>
       </main>

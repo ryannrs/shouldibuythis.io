@@ -47,8 +47,9 @@ export default function Hero() {
         <p className="text-base text-zinc-500 mb-10">
           You get a{" "}
           <strong className="text-white font-semibold">Buy</strong>,{" "}
-          <strong className="text-white font-semibold">Skip</strong>,{" "}
-          <strong className="text-white font-semibold">Buy Better</strong>, or{" "}
+          <strong className="text-white font-semibold">Wait</strong>,{" "}
+          <strong className="text-white font-semibold">Consider Alternatives</strong>,{" "}
+          <strong className="text-white font-semibold">Skip</strong>, or{" "}
           <strong className="text-white font-semibold">
             You Don&apos;t Need It
           </strong>{" "}

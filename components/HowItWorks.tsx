@@ -8,8 +8,8 @@ const agents = [
     body: "Pulls verified purchase reviews, editorial roundups, and spec sheets. Surfaces the product's performance data and most praised real-world use cases so you know what you'd be getting at its best.",
     bullets: [
       "Top-rated review synthesis",
-      "Spec benchmarking vs. category leaders",
-      "Use-case fit scoring",
+      "Spec comparison vs. category leaders",
+      "Real-world use case assessment",
     ],
     iconPath:
       "M6.633 10.5c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75A2.25 2.25 0 0116.5 4.5c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H13.48a4.53 4.53 0 01-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23H5.904",
@@ -35,9 +35,9 @@ const agents = [
     label: "The Economist",
     accentColor: "indigo",
     heading: "Checks the price and finds alternatives.",
-    body: "Analyzes 90 days of price history to tell you whether now is a good time to buy. Then searches the market for alternatives that offer better value per dollar, with a specific product recommendation.",
+    body: "Searches current pricing and deal context to tell you whether now is a good time to buy. Then searches the market for alternatives that offer better value per dollar, with a specific product recommendation.",
     bullets: [
-      "90-day price history & trend analysis",
+      "Current pricing & deal context",
       "Value-per-dollar alternative ranking",
       "Buy now vs. wait recommendation",
     ],
@@ -90,19 +90,17 @@ export default function HowItWorks() {
         </p>
       </div>
 
-      {/* Preliminary check callout */}
-      <div className="bg-violet-500/5 border border-violet-500/20 rounded-xl p-4 mb-8 flex gap-3 items-start max-w-2xl mx-auto">
-        <span className="text-violet-400 font-bold flex-shrink-0 mt-0.5 text-sm">
+      {/* Alternatives agent callout */}
+      <div className="bg-zinc-800/40 border border-zinc-700/40 rounded-xl p-4 mb-8 flex gap-3 items-start max-w-2xl mx-auto">
+        <span className="text-zinc-400 font-bold flex-shrink-0 mt-0.5 text-sm">
           →
         </span>
-        <p className="text-violet-300/80 text-sm leading-relaxed">
-          Before these agents run, a preliminary check asks whether the
-          purchase makes sense at all. If you already own a solution or the
-          category doesn&apos;t fit your situation, you get a{" "}
-          <span className="text-violet-300 font-semibold">
-            You Don&apos;t Need It
-          </span>{" "}
-          verdict immediately.
+        <p className="text-zinc-400/80 text-sm leading-relaxed">
+          In parallel, a fourth{" "}
+          <span className="text-zinc-300 font-semibold">Alternatives</span>{" "}
+          agent scouts 3–5 competitor products in the same category. Its
+          findings surface regardless of the verdict — so even if the answer
+          is BUY, you see what else was in the running.
         </p>
       </div>
 
