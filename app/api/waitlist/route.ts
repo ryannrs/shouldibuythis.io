@@ -95,12 +95,14 @@ export async function POST(request: NextRequest) {
       })
     );
 
-    // Fire-and-forget confirmation email (guarded — don't let missing key kill the response)
+    // Send confirmation email — awaited so Lambda doesn't terminate before the request completes
     if (process.env.RESEND_API_KEY) {
       const resend = new Resend(process.env.RESEND_API_KEY);
-      resend.emails
-        .send(buildConfirmationEmail(email))
-        .catch((err) => console.error("[waitlist] Resend error:", err));
+      try {
+        await resend.emails.send(buildConfirmationEmail(email));
+      } catch (err) {
+        console.error("[waitlist] Resend error:", err);
+      }
     } else {
       console.warn("[waitlist] RESEND_API_KEY not set — skipping confirmation email");
     }
