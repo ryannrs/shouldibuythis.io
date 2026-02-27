@@ -401,7 +401,7 @@ export default function ResultsDisplay({
 
   useEffect(() => {
     if (!jobId) return;
-    const es = new EventSource(`/api/stream/${jobId}`);
+    const es = new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/stream/${jobId}`);
 
     es.onmessage = (e) => {
       if (e.data === "[DONE]") {

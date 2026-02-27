@@ -1,11 +1,19 @@
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
+from fastapi.middleware.cors import CORSMiddleware
 import asyncio, json, threading
 from uuid import uuid4
 from pydantic import BaseModel
 from pipeline import run_pipeline
 
 app = FastAPI(docs_url=None, redoc_url=None)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://shouldibuythis.io"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
 jobs: dict[str, asyncio.Queue] = {}
 
 class AnalyzeRequest(BaseModel):
