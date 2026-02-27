@@ -11,7 +11,7 @@ export default function Nav() {
       <nav className="border-b border-zinc-800/60 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-2.5">
+          <a href="/" className="flex items-center gap-2.5">
             <div
               className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
               style={{
@@ -36,12 +36,12 @@ export default function Nav() {
             <span className="font-bold text-white text-lg tracking-tight">
               ShouldIBuyThis<span className="text-indigo-400">.io</span>
             </span>
-          </div>
+          </a>
 
           {/* Links */}
           <div className="flex items-center gap-4">
             <a
-              href="#how-it-works"
+              href="/#how-it-works"
               className="hidden sm:block text-sm text-zinc-400 hover:text-white transition-colors"
             >
               How it works

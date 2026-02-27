@@ -1,38 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
-import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+import { Resend } from "resend";
 import { docClient, WAITLIST_TABLE } from "@/lib/dynamodb";
 import { generateUnsubscribeToken } from "@/lib/unsubscribeToken";
 
 const APP_URL = process.env.APP_URL ?? "https://shouldibuythis.io";
-
+const FROM_EMAIL = process.env.WAITLIST_FROM_EMAIL ?? "hello@shouldibuythis.io";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const sesClient = new SESClient({
-  region: process.env.AWS_REGION ?? "us-east-1",
-  ...(process.env.AWS_ACCESS_KEY_ID && {
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-    },
-  }),
-});
-
-const FROM_EMAIL =
-  process.env.WAITLIST_FROM_EMAIL ?? "hello@shouldibuythis.io";
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 function buildConfirmationEmail(toEmail: string) {
   const token = generateUnsubscribeToken(toEmail);
   const unsubscribeUrl = `${APP_URL}/api/unsubscribe?email=${encodeURIComponent(toEmail)}&token=${token}`;
 
-  return new SendEmailCommand({
-    Source: FROM_EMAIL,
-    Destination: { ToAddresses: [toEmail] },
-    Message: {
-      Subject: { Data: "You're on the ShouldIBuyThis.io waitlist" },
-      Body: {
-        Html: {
-          Data: `
+  return {
+    from: FROM_EMAIL,
+    to: toEmail,
+    subject: "You're on the ShouldIBuyThis.io waitlist",
+    html: `
 <!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"/></head>
@@ -62,24 +48,19 @@ function buildConfirmationEmail(toEmail: string) {
   </div>
 </body>
 </html>`,
-        },
-        Text: {
-          Data: [
-            "ShouldIBuyThis.io: You're on the list.",
-            "",
-            "Thanks for signing up. I'll keep you in the loop on what's being built,",
-            "what's shipping next, and when you can try it.",
-            "",
-            "Questions? Email me at hello@shouldibuythis.io",
-            "",
-            "If you didn't sign up for this, you can safely ignore this email.",
-            "",
-            `To unsubscribe: ${unsubscribeUrl}`,
-          ].join("\n"),
-        },
-      },
-    },
-  });
+    text: [
+      "ShouldIBuyThis.io: You're on the list.",
+      "",
+      "Thanks for signing up. I'll keep you in the loop on what's being built,",
+      "what's shipping next, and when you can try it.",
+      "",
+      "Questions? Email me at hello@shouldibuythis.io",
+      "",
+      "If you didn't sign up for this, you can safely ignore this email.",
+      "",
+      `To unsubscribe: ${unsubscribeUrl}`,
+    ].join("\n"),
+  };
 }
 
 export async function POST(request: NextRequest) {
@@ -112,16 +93,14 @@ export async function POST(request: NextRequest) {
           createdAt: new Date().toISOString(),
           source: "landing-page",
         },
-        // Reject duplicate emails at the DB level
         ConditionExpression: "attribute_not_exists(email)",
       })
     );
 
-    // Fire-and-forget: send confirmation email via SES.
-    // We don't await so a slow/failed send doesn't block the response.
-    sesClient
+    // Fire-and-forget confirmation email
+    resend.emails
       .send(buildConfirmationEmail(email))
-      .catch((err) => console.error("[waitlist] SES send error:", err));
+      .catch((err) => console.error("[waitlist] Resend error:", err));
 
     return NextResponse.json({
       success: true,

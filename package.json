@@ -14,7 +14,8 @@
     "@aws-sdk/lib-dynamodb": "^3.731.0",
     "next": "^15.1.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "resend": "^6.9.2"
   },
   "devDependencies": {
     "@types/node": "^22",
