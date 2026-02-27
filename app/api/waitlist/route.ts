@@ -95,11 +95,15 @@ export async function POST(request: NextRequest) {
       })
     );
 
-    // Fire-and-forget confirmation email
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    resend.emails
-      .send(buildConfirmationEmail(email))
-      .catch((err) => console.error("[waitlist] Resend error:", err));
+    // Fire-and-forget confirmation email (guarded — don't let missing key kill the response)
+    if (process.env.RESEND_API_KEY) {
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      resend.emails
+        .send(buildConfirmationEmail(email))
+        .catch((err) => console.error("[waitlist] Resend error:", err));
+    } else {
+      console.warn("[waitlist] RESEND_API_KEY not set — skipping confirmation email");
+    }
 
     return NextResponse.json({
       success: true,

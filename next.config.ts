@@ -36,6 +36,14 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  env: {
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    WAITLIST_TABLE: process.env.WAITLIST_TABLE,
+    APP_URL: process.env.APP_URL,
+    WAITLIST_FROM_EMAIL: process.env.WAITLIST_FROM_EMAIL,
+    UNSUBSCRIBE_SECRET: process.env.UNSUBSCRIBE_SECRET,
+    API_URL: process.env.API_URL,
+  },
   async headers() {
     return [
       {
