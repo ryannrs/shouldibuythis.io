@@ -6,6 +6,12 @@ frontend:
         - npm ci
     build:
       commands:
+        - echo "RESEND_API_KEY=$RESEND_API_KEY" >> .env.production.local
+        - echo "WAITLIST_TABLE=$WAITLIST_TABLE" >> .env.production.local
+        - echo "APP_URL=$APP_URL" >> .env.production.local
+        - echo "WAITLIST_FROM_EMAIL=$WAITLIST_FROM_EMAIL" >> .env.production.local
+        - echo "UNSUBSCRIBE_SECRET=$UNSUBSCRIBE_SECRET" >> .env.production.local
+        - echo "API_URL=$API_URL" >> .env.production.local
         - npm run build
   artifacts:
     baseDirectory: .next
