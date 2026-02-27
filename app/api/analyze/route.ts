@@ -44,6 +44,7 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json();
+  console.log("[analyze] fetching:", `${process.env.API_URL}/analyze`);
   const upstream = await fetch(`${process.env.API_URL}/analyze`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
