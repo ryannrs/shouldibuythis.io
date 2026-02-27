@@ -46,6 +46,12 @@ export default function Nav() {
             >
               How it works
             </a>
+            <a
+              href="/analyze"
+              className="hidden sm:block text-sm text-zinc-400 hover:text-white transition-colors"
+            >
+              Try it →
+            </a>
             <button
               onClick={() => setShowModal(true)}
               className="text-sm text-white font-semibold px-4 py-2 rounded-lg transition-opacity hover:opacity-90"
