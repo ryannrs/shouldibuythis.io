@@ -11,17 +11,24 @@ export async function POST(req: Request) {
 
   const normalized = code.trim().toUpperCase();
 
-  const result = await docClient.send(
-    new QueryCommand({
-      TableName: WAITLIST_TABLE,
-      IndexName: "code-index",
-      KeyConditionExpression: "#c = :code",
-      ExpressionAttributeNames: { "#c": "code" },
-      ExpressionAttributeValues: { ":code": normalized },
-      Limit: 1,
-    })
-  );
+  let result;
+  try {
+    result = await docClient.send(
+      new QueryCommand({
+        TableName: WAITLIST_TABLE,
+        IndexName: "code-index",
+        KeyConditionExpression: "#c = :code",
+        ExpressionAttributeNames: { "#c": "code" },
+        ExpressionAttributeValues: { ":code": normalized },
+        Limit: 1,
+      })
+    );
+  } catch (err) {
+    console.error("[auth] DynamoDB error:", err);
+    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+  }
 
+  console.log("[auth] query result:", JSON.stringify(result.Items));
   const item = result.Items?.[0];
   if (!item || (item.uses_remaining ?? 0) <= 0) {
     return NextResponse.json({ error: "Invalid or expired code" }, { status: 401 });
