@@ -28,7 +28,7 @@ const securityHeaders = [
       // No external images used
       "img-src 'self' data:",
       // API routes are same-origin
-      "connect-src 'self'",
+      "connect-src 'self' https://api.shouldibuythis.io",
       "font-src 'self'",
       "frame-ancestors 'none'",
     ].join("; "),
