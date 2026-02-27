@@ -8,8 +8,6 @@ const APP_URL = process.env.APP_URL ?? "https://shouldibuythis.io";
 const FROM_EMAIL = process.env.WAITLIST_FROM_EMAIL ?? "hello@shouldibuythis.io";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 function buildConfirmationEmail(toEmail: string) {
   const token = generateUnsubscribeToken(toEmail);
   const unsubscribeUrl = `${APP_URL}/api/unsubscribe?email=${encodeURIComponent(toEmail)}&token=${token}`;
@@ -98,6 +96,7 @@ export async function POST(request: NextRequest) {
     );
 
     // Fire-and-forget confirmation email
+    const resend = new Resend(process.env.RESEND_API_KEY);
     resend.emails
       .send(buildConfirmationEmail(email))
       .catch((err) => console.error("[waitlist] Resend error:", err));
