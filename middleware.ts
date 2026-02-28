@@ -18,5 +18,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/analyze/:path*", "/results/:path*", "/api/analyze/:path*", "/api/stream/:path*"],
+  matcher: ["/analyze(.*)", "/results(.*)", "/api/analyze(.*)", "/api/stream(.*)"],
 };
