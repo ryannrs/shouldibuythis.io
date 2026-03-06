@@ -46,26 +46,18 @@ async def stream(job_id: str):
     async def generator():
         q = jobs.get(job_id)
         if not q:
-            yield f"data: {json.dumps({chr(39)+"type"+chr(39): "error", chr(39)+"message"+chr(39): "job not found"})}
-
-"
+            yield f"data: {json.dumps({'type': 'error', 'message': 'job not found'})}\n\n"
             return
         while True:
             try:
                 event = await asyncio.wait_for(q.get(), timeout=15.0)
             except asyncio.TimeoutError:
-                yield ": keepalive
-
-"
+                yield ": keepalive\n\n"
                 continue
             if event is None:
-                yield "data: [DONE]
-
-"
+                yield "data: [DONE]\n\n"
                 jobs.pop(job_id, None)
                 break
-            yield f"data: {json.dumps(event)}
-
-"
+            yield f"data: {json.dumps(event)}\n\n"
 
     return StreamingResponse(generator(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},)
