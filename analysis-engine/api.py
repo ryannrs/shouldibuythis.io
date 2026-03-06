@@ -49,7 +49,13 @@ async def stream(job_id: str):
             yield f"data: {json.dumps({'type': 'error', 'message': 'job not found'})}\n\n"
             return
         while True:
-            event = await q.get()
+            try:
+                event = await asyncio.wait_for(q.get(), timeout=15.0)
+            except asyncio.TimeoutError:
+                yield ": keepalive
+
+"
+                continue
             if event is None:
                 yield "data: [DONE]\n\n"
                 jobs.pop(job_id, None)

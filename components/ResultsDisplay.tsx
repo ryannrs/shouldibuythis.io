@@ -422,7 +422,7 @@ export default function ResultsDisplay({
           setAgentAnalysis((p) => ({ ...p, [agent]: event.text }));
           setAgentPhase((p) => ({ ...p, [agent]: "writing" }));
         } else if (event.type === "alternatives") {
-          setAlternatives(event.data);
+          if (Array.isArray(event.data)) setAlternatives(event.data);
         } else if (event.type === "verdict") {
           setVerdict(event.data);
         } else if (event.type === "error") {
@@ -434,7 +434,10 @@ export default function ResultsDisplay({
       }
     };
 
-    es.onerror = () => es.close();
+    es.onerror = () => {
+      setPipelineError("Connection lost. The analysis may have timed out — try again.");
+      es.close();
+    };
 
     return () => es.close();
   }, [jobId]);
