@@ -46,7 +46,9 @@ async def stream(job_id: str):
     async def generator():
         q = jobs.get(job_id)
         if not q:
-            yield f"data: {json.dumps({'type': 'error', 'message': 'job not found'})}\n\n"
+            yield f"data: {json.dumps({chr(39)+"type"+chr(39): "error", chr(39)+"message"+chr(39): "job not found"})}
+
+"
             return
         while True:
             try:
@@ -57,9 +59,13 @@ async def stream(job_id: str):
 "
                 continue
             if event is None:
-                yield "data: [DONE]\n\n"
+                yield "data: [DONE]
+
+"
                 jobs.pop(job_id, None)
                 break
-            yield f"data: {json.dumps(event)}\n\n"
+            yield f"data: {json.dumps(event)}
+
+"
 
     return StreamingResponse(generator(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},)
