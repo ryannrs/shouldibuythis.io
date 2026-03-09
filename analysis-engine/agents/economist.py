@@ -14,27 +14,7 @@ def run_economist(product: str, owns: str|None = None, context: dict = {}, emit=
         {"role": "user", "content": f"Analyze this product: {product}"}
     ]
     
-    OWNS_CONTEXT = f"""
-
-    The user currently owns: {owns}, frame your analysis based on the value proposition of buying this product given what they already have. Factor in possible re-sale or trade in value of their existing product as well.
-
-    """ if owns else ""
-
-    SYSTEM_PROMPT = f"""You are the Economist agent in a product analysis pipeline.
-
-Today's date is {date.today().strftime("%B %d, %Y")}.
-
-{OWNS_CONTEXT}
-The Advocate made the case FOR buying:
----
-{context.get("advocate", "No prior analysis available.")}
----
-
-The Skeptic identified these weaknesses:
----
-{context.get("skeptic", "No prior analysis available.")}
----
-
+    STATIC_PROMPT = """You are the Economist agent in a product analysis pipeline.
 Your job is to answer two questions with evidence:
 1. Is the current price a good time to buy, or should the buyer wait for a better deal?
    Find the current price, the 90-day low, and any predictable sale windows. If waiting makes sense, name an exact price alert threshold.
@@ -45,13 +25,19 @@ Search for: current price vs 90-day history, competing products with current pri
 Search one query at a time. After each result, reason about what you found and what to look for next before searching again.
 Never batch multiple searches at once. 7 searches maximum.
 Write 2-3 paragraphs. No headers, no bullets, no markdown. Plain prose, every price cited.
-Do NOT give a final BUY/WAIT/SKIP verdict — the Orchestrator makes that call. End with price and value findings only.
-"""
+Do NOT give a final BUY/WAIT/SKIP verdict — the Orchestrator makes that call. End with price and value findings only."""
+
+    OWNS_CONTEXT = f"\n\nThe user currently owns: {owns}. Frame your analysis based on the value proposition given what they already have. Factor in possible resale or trade-in value of their existing product as well." if owns else ""
+
+    DYNAMIC_PROMPT = f"Today's date is {date.today().strftime('%B %d, %Y')}.{OWNS_CONTEXT}\n\nThe Advocate made the case FOR buying:\n---\n{context.get('advocate', 'No prior analysis available.')}\n---\n\nThe Skeptic identified these weaknesses:\n---\n{context.get('skeptic', 'No prior analysis available.')}\n---"
 
     while True:
         response = client.messages.create(
             model="claude-sonnet-4-6",
-            system=SYSTEM_PROMPT,
+            system=[
+                {"type": "text", "text": STATIC_PROMPT, "cache_control": {"type": "ephemeral"}},
+                {"type": "text", "text": DYNAMIC_PROMPT},
+            ],
             messages=messages,
             tools=TOOLS,
             max_tokens=4096
@@ -102,6 +88,8 @@ Do NOT give a final BUY/WAIT/SKIP verdict — the Orchestrator makes that call. 
                         "tool_use_id": block.id,
                         "content": result
                     })
+            if tool_results:
+                tool_results[-1]["cache_control"] = {"type": "ephemeral"}
             messages.append({"role": "user", "content": tool_results}) # type: ignore
 
         elif response.stop_reason == "max_tokens":

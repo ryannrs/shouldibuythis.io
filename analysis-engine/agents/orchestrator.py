@@ -6,6 +6,7 @@ VERDICT_TOOL = [
     {
         "name": "submit_verdict",
         "description": "Submit the final verdict for this product analysis.",
+        "cache_control": {"type": "ephemeral"},
         "input_schema": {
             "type": "object",
             "properties": {

@@ -72,6 +72,10 @@ export default function AnalyzeForm() {
         setLoading(false);
         return;
       }
+      if (res.status === 401) {
+        window.location.href = "/access?next=/analyze";
+        return;
+      }
       if (!res.ok) {
         setLoading(false);
         return;

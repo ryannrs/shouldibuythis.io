@@ -15,31 +15,28 @@ def run_advocate(product: str, owns: str|None = None, context: dict = {}, emit=N
         {"role": "user", "content": f"Analyze this product: {product}"}
     ]
     
-    OWNS_CONTEXT = f"""
+    STATIC_PROMPT = """You are the Advocate agent in a product analysis pipeline.
+Your job is to find and present the strongest factual case FOR buying this product.
+Start with a broad search. After each search, identify the strongest specific claims worth verifying with data.
+Follow leads. If a reviewer mentions a benchmark score, find it.
+If a spec claim is made, verify it. Stop when you have enough sourced evidence to make a compelling case — not before.
+Write no more than 3-4 concise paragraphs. No headers, no bullet points, no tables, no markdown.
+Dense, evidence-rich prose only. Every sentence must cite a source or score.
+You have 7 searches to gather information. Use them wisely.
+Search one query at a time. After each result, reason about what you found and what to look for next before searching again.
+Never batch multiple searches at once."""
 
-    The user currently owns: {owns}, Frame your case around the upgrade value - what meaningfully improves, what they'd gain that their current product can't provide. If the upgrade is marginal, note it honestly but lean into what's genuinely new.
+    OWNS_CONTEXT = f"\n\nThe user currently owns: {owns}. Frame your case around the upgrade value - what meaningfully improves, what they'd gain that their current product can't provide. If the upgrade is marginal, note it honestly but lean into what's genuinely new." if owns else ""
 
-    """ if owns else ""
-
-    SYSTEM_PROMPT = f"""You are the Advocate agent in a product analysis pipeline.
-
-    {OWNS_CONTEXT}
-    Today's date is {date.today().strftime("%B %d, %Y")}. Prioritize recent sources over older ones.
-    Your job is to find and present the strongest factual case FOR buying this product.
-    Start with a broad search. After each search, identify the strongest specific claims worth verifying with data. 
-    Follow leads. If a reviewer mentions a benchmark score, find it. 
-    If a spec claim is made, verify it. Stop when you have enough sourced evidence to make a compelling case — not before.
-    Write no more than 3-4 concise paragraphs. No headers, no bullet points, no tables, no markdown. 
-    Dense, evidence-rich prose only. Every sentence must cite a source or score.
-    You have 7 searches to gather information. Use them wisely.
-    Search one query at a time. After each result, reason about what you found and what to look for next before searching again. 
-    Never batch multiple searches at once.
-    """
+    DYNAMIC_PROMPT = f"Today's date is {date.today().strftime('%B %d, %Y')}. Prioritize recent sources over older ones.{OWNS_CONTEXT}"
 
     while True:
         response = client.messages.create(
             model="claude-sonnet-4-6",
-            system=SYSTEM_PROMPT,
+            system=[
+                {"type": "text", "text": STATIC_PROMPT, "cache_control": {"type": "ephemeral"}},
+                {"type": "text", "text": DYNAMIC_PROMPT},
+            ],
             messages=messages,
             tools=TOOLS,
             max_tokens=2048
@@ -102,7 +99,9 @@ def run_advocate(product: str, owns: str|None = None, context: dict = {}, emit=N
                         "tool_use_id": block.id,
                         "content": result
                     })
-            messages.append({"role": "user", "content": tool_results}) # type: ignore 
+            if tool_results:
+                tool_results[-1]["cache_control"] = {"type": "ephemeral"}
+            messages.append({"role": "user", "content": tool_results}) # type: ignore
 
         elif response.stop_reason == "max_tokens":
             for block in response.content:

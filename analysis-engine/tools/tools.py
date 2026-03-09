@@ -11,8 +11,7 @@ TOOLS = [
                 }
             },
             "required": ["query"]
-        }
-        
+        },
+        "cache_control": {"type": "ephemeral"}
     }
-    
 ]

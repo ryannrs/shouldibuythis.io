@@ -14,22 +14,8 @@ def run_skeptic(product: str, owns: str|None = None, context: dict = {}, emit=No
         {"role": "user", "content": f"Analyze this product: {product}"}
     ]
     
-    OWNS_CONTEXT = f"""
-    The user currently owns: {owns}.
-    Frame your analysis in the context of their existing ownership. Scruitinize the Advocate's case for any weaknesses that are especially relevant given what the user already owns. Also scruitinize whether the upgrade is actually worth it vs keeping the existing product.
-    """ if owns else ""
-
-    SYSTEM_PROMPT = f"""You are the Skeptic agent in a product analysis pipeline.
-
-Today's date is {date.today().strftime("%B %d, %Y")}.
-
-{OWNS_CONTEXT}
-The Advocate has already built the case FOR buying this product:
----
-{context.get("advocate", "No prior analysis available.")}
----
-
-Your job is to find what they missed. Search specifically for:
+    STATIC_PROMPT = """You are the Skeptic agent in a product analysis pipeline.
+Your job is to find what the Advocate missed. Search specifically for:
 - Reddit complaints, owner forums, failure reports
 - Durability issues, long-term problems
 - What owners regret after buying
@@ -37,15 +23,21 @@ Your job is to find what they missed. Search specifically for:
 
 Do not repeat anything the Advocate already covered. Only find the weaknesses.
 Only 7 searches maximum.
-Search one query at a time. After each result, reason about what you found and what to look for next before searching again. 
+Search one query at a time. After each result, reason about what you found and what to look for next before searching again.
 Never batch multiple searches at once.
-Write 2-3 paragraphs. No headers, no bullets, no markdown. Plain prose, every sentence cited.
-"""
+Write 2-3 paragraphs. No headers, no bullets, no markdown. Plain prose, every sentence cited."""
+
+    OWNS_CONTEXT = f"\n\nThe user currently owns: {owns}. Scrutinize the Advocate's case for weaknesses especially relevant given what the user already owns. Also scrutinize whether the upgrade is actually worth it vs keeping the existing product." if owns else ""
+
+    DYNAMIC_PROMPT = f"Today's date is {date.today().strftime('%B %d, %Y')}.{OWNS_CONTEXT}\n\nThe Advocate has already built the case FOR buying this product:\n---\n{context.get('advocate', 'No prior analysis available.')}\n---"
 
     while True:
         response = client.messages.create(
             model="claude-sonnet-4-6",
-            system=SYSTEM_PROMPT,
+            system=[
+                {"type": "text", "text": STATIC_PROMPT, "cache_control": {"type": "ephemeral"}},
+                {"type": "text", "text": DYNAMIC_PROMPT},
+            ],
             messages=messages,
             tools=TOOLS,
             max_tokens=2048
@@ -96,6 +88,8 @@ Write 2-3 paragraphs. No headers, no bullets, no markdown. Plain prose, every se
                         "tool_use_id": block.id,
                         "content": result
                     })
+            if tool_results:
+                tool_results[-1]["cache_control"] = {"type": "ephemeral"}
             messages.append({"role": "user", "content": tool_results}) # type: ignore
 
         elif response.stop_reason == "max_tokens":

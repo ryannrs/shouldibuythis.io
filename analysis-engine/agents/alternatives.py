@@ -18,6 +18,7 @@ ALTERNATIVES_TOOLS = [
     {
         "name": "submit_alternatives",
         "description": "Submit the final list of alternative products once you have enough information. Call this when done searching.",
+        "cache_control": {"type": "ephemeral"},
         "input_schema": {
             "type": "object",
             "properties": {
@@ -105,6 +106,8 @@ When done, call submit_alternatives with your findings. Do not write prose analy
                         "searches": searches
                     }
 
+            if tool_results:
+                tool_results[-1]["cache_control"] = {"type": "ephemeral"}
             messages.append({"role": "user", "content": tool_results})
 
         else:

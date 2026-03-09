@@ -12,6 +12,11 @@ export function middleware(request: NextRequest) {
   const cookie = request.cookies.get("access")?.value;
   if (cookie && cookie.length > 0) return NextResponse.next();
 
+  // API routes cannot be redirected — return 401 so the client handles it
+  if (pathname.startsWith("/api/")) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const loginUrl = new URL("/access", request.url);
   loginUrl.searchParams.set("next", pathname + request.nextUrl.search);
   return NextResponse.redirect(loginUrl);
